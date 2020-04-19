@@ -5,16 +5,33 @@ import {
   Text,
   TouchableOpacity,
   FlatList,
+  Modal,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import colors from "./Colors";
 import tempData from "./tempData";
-import ToBuyList from './components/ToBuyList';
+import ToBuyList from "./components/ToBuyList";
+import AddListModal from "./components/AddListModal";
 
 export default class App extends React.Component {
+  state = {
+    addToBuyVisible: false,
+  };
+
+  toggleAddToBuyModal() {
+    this.setState({ addToBuyVisible: !this.state.addToBuyVisible });
+  }
+
   render() {
     return (
       <View style={styles.container}>
+        <Modal
+          animationType="slide"
+          visible={this.state.addToBuyVisible}
+          onRequestClose={() => this.toggleAddToBuyModal()}
+        >
+          <AddListModal closeModal = {() => this.toggleAddToBuyModal()}/>
+        </Modal>
         <View style={{ flexDirection: "row" }}>
           <View style={styles.divider} />
           <Text style={styles.title}>
@@ -23,7 +40,10 @@ export default class App extends React.Component {
           </Text>
         </View>
         <View style={{ marginVertical: 48 }}>
-          <TouchableOpacity style={styles.addList}>
+          <TouchableOpacity
+            style={styles.addList}
+            onPress={() => this.toggleAddToBuyModal()}
+          >
             <AntDesign name="plus" size={16} color={colors.blue} />
           </TouchableOpacity>
 
