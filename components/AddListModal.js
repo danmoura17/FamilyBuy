@@ -29,6 +29,10 @@ export default class AddListModal extends React.Component {
   createToBuy = () => {
     const { name, color } = this.state;
 
+    const list = {name, color}
+
+    this.props.addList(list);
+
     tempData.push({
       name,
       color,

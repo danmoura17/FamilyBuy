@@ -8,21 +8,37 @@ import {
   FlatList,
   KeyboardAvoidingView,
   TextInput,
+  Keyboard
 } from "react-native";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import Colors from "../Colors";
 
 export default class TobuyModal extends React.Component {
   state = {
-    name: this.props.list.name,
-    color: this.props.list.color,
-    items: this.props.list.items,
+    newTobuy: "",
   };
 
-  renderItem = (item) => {
+  toggleTobuyCompleted = (index) => {
+    let list = this.props.list;
+    list.items[index].completed = !list.items[index].completed;
+
+    this.props.updateList(list);
+  };
+
+  addItem = () => {
+    let list = this.props.list;
+    list.items.push({title: this.state.newTobuy, completed: false});
+
+    this.props.updateList(list);
+    this.setState({newTobuy: ""});
+
+    Keyboard.dismiss();
+  }
+
+  renderItem = (item, index) => {
     return (
       <View style={styles.itemContainer}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => this.toggleTobuyCompleted(index)}>
           <Ionicons
             name={item.completed ? "ios-square" : "ios-square-outline"}
             size={24}
@@ -47,60 +63,63 @@ export default class TobuyModal extends React.Component {
   };
 
   render() {
-    const taskCount = this.state.items.length;
-    const completedCount = this.state.items.filter((item) => item.completed)
-      .length;
+    const list = this.props.list;
+
+    const taskCount = list.items.length;
+    const completedCount = list.items.filter((item) => item.completed).length;
     return (
-      <SafeAreaView style={styles.container}>
-        <TouchableOpacity
-          style={{ position: "absolute", top: 64, right: 32, zIndex: 10 }}
-          onPress={this.props.closeModal}
-        >
-          <AntDesign name="close" size={24} color={Colors.black} />
-        </TouchableOpacity>
-
-        <View
-          style={[
-            styles.section,
-            styles.header,
-            { borderBottomColor: this.state.color },
-          ]}
-        >
-          <View>
-            <Text style={styles.title}>{this.state.name}</Text>
-            <Text style={styles.taskCount}>
-              {completedCount} de {taskCount} items
-            </Text>
-          </View>
-        </View>
-
-        <View style={[styles.section, { flex: 3 }]}>
-          <FlatList
-            data={this.state.items}
-            renderItem={({ item }) => this.renderItem(item)}
-            keyExtractor={(item) => item.title}
-            contentContainerStyle={{
-              paddingHorizontal: 32,
-              paddingVertical: 64,
-            }}
-            showsVerticalScrollIndicator={false}
-          />
-        </View>
-
-        <KeyboardAvoidingView
-          style={[styles.section, styles.footer]}
-          behavior="padding"
-        >
-          <TextInput
-            style={[styles.input, { borderColor: this.state.color }]}
-          />
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+        <SafeAreaView style={styles.container}>
           <TouchableOpacity
-            style={[styles.addItem, { backgroundColor: this.state.color }]}
+            style={{ position: "absolute", top: 64, right: 32, zIndex: 10 }}
+            onPress={this.props.closeModal}
           >
-            <AntDesign name="plus" size={16} color={Colors.white} />
+            <AntDesign name="close" size={24} color={Colors.black} />
           </TouchableOpacity>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
+
+          <View
+            style={[
+              styles.section,
+              styles.header,
+              { borderBottomColor: list.color },
+            ]}
+          >
+            <View>
+              <Text style={styles.title}>{list.name}</Text>
+              <Text style={styles.taskCount}>
+                {completedCount} de {taskCount} items
+              </Text>
+            </View>
+          </View>
+
+          <View style={[styles.section, { flex: 3 }]}>
+            <FlatList
+              data={list.items}
+              renderItem={({ item, index }) => this.renderItem(item, index)}
+              keyExtractor={(item) => item.title}
+              contentContainerStyle={{
+                paddingHorizontal: 32,
+                paddingVertical: 64,
+              }}
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
+
+          <View style={[styles.section, styles.footer]}>
+            <TextInput
+              style={[styles.input, { borderColor: list.color }]}
+              onChangeText={(text) => this.setState({ newTobuy: text })}
+              value={this.state.newTobuy}
+            />
+            <TouchableOpacity
+              style={[styles.addItem, { backgroundColor: list.color }]}
+              onPress={() => this.addItem()}
+            >
+              <AntDesign name="plus" size={16} color={Colors.white} />
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
+      </KeyboardAvoidingView>
     );
   }
 }

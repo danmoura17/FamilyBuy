@@ -24,8 +24,11 @@ export default class ToBuyList extends React.Component {
           visible={this.state.showListVariable}
           onRequestClose={() => this.toggleListModel()}
         >
-          <TobuyModal list={list} closeModal={() => this.toggleListModel()}/>
-
+          <TobuyModal
+            list={list}
+            closeModal={() => this.toggleListModel()}
+            updateList={this.props.updateList}
+          />
         </Modal>
         <TouchableOpacity
           style={[styles.listContainer, { backgroundColor: list.color }]}
@@ -36,11 +39,11 @@ export default class ToBuyList extends React.Component {
           </Text>
           <View>
             <View style={{ alignItems: "center" }}>
-              <Text style={styles.count}>{completedCount}</Text>
+              <Text style={styles.count}>{remainingCount}</Text>
               <Text style={styles.subtitle}>Não feito</Text>
             </View>
             <View style={{ alignItems: "center" }}>
-              <Text style={styles.count}>{remainingCount}</Text>
+              <Text style={styles.count}>{completedCount}</Text>
               <Text style={styles.subtitle}>Feito</Text>
             </View>
           </View>
