@@ -6,41 +6,76 @@ import {
   TouchableOpacity,
   FlatList,
   Modal,
+  ActivityIndicator
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import colors from "./Colors";
 import tempData from "./tempData";
 import ToBuyList from "./components/ToBuyList";
 import AddListModal from "./components/AddListModal";
+import Fire from "./Fire";
 
 export default class App extends React.Component {
   state = {
     addToBuyVisible: false,
-    lists: tempData
+    lists: [],
+    user: {},
+    loading: true,
   };
+
+  componentDidMount() {
+    firebase = new Fire((error, user) => {
+      if (error) {
+        return alert("Parece que algo deu errado");
+      }
+
+      firebase.getLists(lists => {
+        this.setState({ lists, user }, () => {
+          this.setState({ loading: false });
+        });
+      });
+
+      this.setState({ user });
+    });
+  }
+
+  componentWillMount(){
+    firebase.detach();
+  }
 
   toggleAddToBuyModal() {
     this.setState({ addToBuyVisible: !this.state.addToBuyVisible });
   }
 
-  renderList = list => {
-    return <ToBuyList list={list} updateList={this.updateList}/>
+  renderList = (list) => {
+    return <ToBuyList list={list} updateList={this.updateList} />;
   };
 
-  addList = list => {
-    this.setState({lists: [...this.state.lists, {...list, id: this.state.lists.length + 1, items: [] }]})
-  };
-
-  updateList = list => {
+  addList = (list) => {
     this.setState({
-      lists: this.state.lists.map( item => {
-        return item.id === list.id ? list : item;
-      })
-    })
+      lists: [
+        ...this.state.lists,
+        { ...list, id: this.state.lists.length + 1, items: [] },
+      ],
+    });
   };
 
+  updateList = (list) => {
+    this.setState({
+      lists: this.state.lists.map((item) => {
+        return item.id === list.id ? list : item;
+      }),
+    });
+  };
 
   render() {
+    if(this.state.loading){
+      return (
+        <View style={styles.container}>
+          <ActivityIndicator size="large" color={colors.blue}/>
+        </View>
+      )
+    }
     return (
       <View style={styles.container}>
         <Modal
@@ -48,8 +83,14 @@ export default class App extends React.Component {
           visible={this.state.addToBuyVisible}
           onRequestClose={() => this.toggleAddToBuyModal()}
         >
-          <AddListModal closeModal = {() => this.toggleAddToBuyModal()} addList={this.addList}/>
+          <AddListModal
+            closeModal={() => this.toggleAddToBuyModal()}
+            addList={this.addList}
+          />
         </Modal>
+        <View>
+          <Text>User: {this.state.user.uid}</Text>
+        </View>
         <View style={{ flexDirection: "row" }}>
           <View style={styles.divider} />
           <Text style={styles.title}>
@@ -71,7 +112,7 @@ export default class App extends React.Component {
         <View style={{ height: 275, paddingLeft: 32 }}>
           <FlatList
             data={this.state.lists}
-            keyExtractor={(item) => item.name}
+            keyExtractor={(item) => item.id.toString()}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => this.renderList(item)}
