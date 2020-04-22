@@ -8,10 +8,12 @@ import {
   FlatList,
   KeyboardAvoidingView,
   TextInput,
-  Keyboard
+  Keyboard,
+  Animated,
 } from "react-native";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import Colors from "../Colors";
+import { Swipeable } from "react-native-gesture-handler";
 
 export default class TobuyModal extends React.Component {
   state = {
@@ -27,38 +29,83 @@ export default class TobuyModal extends React.Component {
 
   addItem = () => {
     let list = this.props.list;
-    list.items.push({title: this.state.newTobuy, completed: false});
 
-    this.props.updateList(list);
-    this.setState({newTobuy: ""});
+    if (!list.items.some(item => item.title === this.state.newTobuy)){
+      list.items.push({title: this.state.newTobuy, completed: false});
+      this.props.updateList(list);
+    }
+
+    
+    this.setState({ newTobuy: "" });
 
     Keyboard.dismiss();
-  }
+  };
+
+  deleteItem = index => {
+    let list = this.props.list;
+    list.items.splice(index, 1);
+
+    this.props.updateList(list);
+};
 
   renderItem = (item, index) => {
     return (
-      <View style={styles.itemContainer}>
-        <TouchableOpacity onPress={() => this.toggleTobuyCompleted(index)}>
-          <Ionicons
-            name={item.completed ? "ios-square" : "ios-square-outline"}
-            size={24}
-            color={Colors.gray}
-            style={{ width: 32 }}
-          />
-        </TouchableOpacity>
+      <Swipeable
+        renderRightActions={(_, dragX) => this.rightActions(dragX, index)}
+      >
+        <View style={styles.itemContainer}>
+          <TouchableOpacity onPress={() => this.toggleTobuyCompleted(index)}>
+            <Ionicons
+              name={item.completed ? "ios-square" : "ios-square-outline"}
+              size={24}
+              color={Colors.gray}
+              style={{ width: 32 }}
+            />
+          </TouchableOpacity>
 
-        <Text
-          style={[
-            styles.item,
-            {
-              textDecorationLine: item.completed ? "line-through" : "none",
-              color: item.completed ? Colors.gray : Colors.black,
-            },
-          ]}
-        >
-          {item.title}{" "}
-        </Text>
-      </View>
+          <Text
+            style={[
+              styles.item,
+              {
+                textDecorationLine: item.completed ? "line-through" : "none",
+                color: item.completed ? Colors.gray : Colors.black,
+              },
+            ]}
+          >
+            {item.title}{" "}
+          </Text>
+        </View>
+      </Swipeable>
+    );
+  };
+
+  rightActions = (dragX, index) => {
+    const scale = dragX.interpolate({
+      inputRange: [-100, 0],
+      outputRange: [1, 0.9],
+      extrapolate: "clamp",
+    });
+
+    const opacity = dragX.interpolate({
+      inputRange: [-100, -20, 0],
+      outputRange: [1, 0.9, 0],
+      extrapolate: "clamp",
+    });
+
+    return (
+      <TouchableOpacity onPress={() => this.deleteItem(index)}>
+        <Animated.View style={[styles.deleteButton, { opacity: opacity }]}>
+          <Animated.Text
+            style={{
+              color: colors.white,
+              fontWeight: "800",
+              transform: [{ scale }],
+            }}
+          >
+            Delete
+          </Animated.Text>
+        </Animated.View>
+      </TouchableOpacity>
     );
   };
 
@@ -92,15 +139,11 @@ export default class TobuyModal extends React.Component {
             </View>
           </View>
 
-          <View style={[styles.section, { flex: 3 }]}>
+          <View style={[styles.section, { flex: 3 , marginVertical: 16}]}>
             <FlatList
               data={list.items}
               renderItem={({ item, index }) => this.renderItem(item, index)}
-              keyExtractor={(_, index) => index.toString()}
-              contentContainerStyle={{
-                paddingHorizontal: 32,
-                paddingVertical: 64,
-              }}
+              keyExtractor={item => item.title}
               showsVerticalScrollIndicator={false}
             />
           </View>
@@ -138,6 +181,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     marginLeft: 64,
     borderBottomWidth: 3,
+    paddingTop: 16
   },
   title: {
     fontSize: 30,
@@ -154,6 +198,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     flexDirection: "row",
     alignItems: "center",
+    paddingVertical: 16
   },
   input: {
     flex: 1,
@@ -173,10 +218,18 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     flexDirection: "row",
     alignItems: "center",
+    paddingLeft: 32
   },
   item: {
     color: Colors.black,
     fontWeight: "700",
     fontSize: 16,
+  },
+  deleteButton: {
+    flex: 1,
+    backgroundColor: colors.red,
+    justifyContent: "center",
+    alignItems: "center",
+    width: 80,
   },
 });

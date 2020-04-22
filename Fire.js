@@ -2,7 +2,7 @@ import firebase from "firebase";
 import "@firebase/firestore";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAhFir9clctJKd3eVQGfUZcU5tvWcT8VsY",
+  apiKey: "AIzaSyAhFir9clctJKd3eVQGfUZcU5tvWcT8VsY",
     authDomain: "familybuyapp.firebaseapp.com",
     databaseURL: "https://familybuyapp.firebaseio.com",
     projectId: "familybuyapp",
@@ -12,54 +12,70 @@ const firebaseConfig = {
 };
 
 class Fire {
-    constructor(callback) {
-        this.init(callback);
+  constructor(callback) {
+    this.init(callback);
+  }
+
+  init(callback) {
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
     }
 
-    init(callback) {
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        callback(null, user);
+      } else {
+        firebase
+          .auth()
+          .signInAnonymously()
+          .catch((error) => {
+            callback(error);
+          });
+      }
+    });
+  }
 
-        firebase.auth().onAuthStateChanged(user => {
-            if (user) {
-                callback(null, user);
-            } else {
-                firebase
-                    .auth()
-                    .signInAnonymously()
-                    .catch(error => {
-                        callback(error);
-                    });
-            }
-        });
-    }
+  getLists(callback) {
+    let ref = this.ref.orderBy("name");
 
-    getLists(callback) {
-        let ref = firebase
-            .firestore()
-            .collection("users")
-            .doc(this.userId)
-            .collection("lists");
+    this.unsubscribe = ref.onSnapshot((snapshot) => {
+      lists = [];
 
-        this.unsubscribe = ref.onSnapshot(snapshot => {
-            lists = [];
+      snapshot.forEach((doc) => {
+        lists.push({ id: doc.id, ...doc.data() });
+      });
 
-            snapshot.forEach(doc => {
-                lists.push({ id: doc.id, ...doc.data() });
-            });
+      callback(lists);
+    });
+  }
 
-            callback(lists);
-        });
-    }
+  addList(list) {
+    let ref = this.ref;
 
-    get userId() {
-        return firebase.auth().currentUser.uid;
-    }
+    ref.add(list);
+  }
 
-    detach() {
-        this.unsubscribe();
-    }
+  updateList(list) {
+    let ref = this.ref;
+
+    ref.doc(list.id).update(list);
+  }
+
+  get userId() {
+    return firebase.auth().currentUser.uid;
+  }
+
+  get ref() {
+    return firebase
+      .firestore()
+      .collection("users")
+      .doc(this.userId)
+      .collection("lists");
+  }
+
+  detach() {
+    this.unsubscribe();
+  }
 }
 
 export default Fire;
