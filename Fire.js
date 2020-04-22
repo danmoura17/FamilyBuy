@@ -21,7 +21,7 @@ class Fire {
       firebase.initializeApp(firebaseConfig);
     }
 
-    firebase.auth().onAuthStateChanged((user) => {
+    firebase.auth().onAuthStateChanged(user => {
       if (user) {
         callback(null, user);
       } else {

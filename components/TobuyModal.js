@@ -15,12 +15,12 @@ import { AntDesign, Ionicons } from "@expo/vector-icons";
 import Colors from "../Colors";
 import { Swipeable } from "react-native-gesture-handler";
 
-export default class TobuyModal extends React.Component {
+export default class ToBuyModal extends React.Component {
   state = {
-    newTobuy: "",
+    newToBuy: "",
   };
 
-  toggleTobuyCompleted = (index) => {
+  toggleToBuyCompleted = (index) => {
     let list = this.props.list;
     list.items[index].completed = !list.items[index].completed;
 
@@ -30,23 +30,22 @@ export default class TobuyModal extends React.Component {
   addItem = () => {
     let list = this.props.list;
 
-    if (!list.items.some(item => item.title === this.state.newTobuy)){
-      list.items.push({title: this.state.newTobuy, completed: false});
+    if (!list.items.some((item) => item.title === this.state.newToBuy)) {
+      list.items.push({ title: this.state.newToBuy, completed: false });
       this.props.updateList(list);
     }
 
-    
-    this.setState({ newTobuy: "" });
+    this.setState({ newToBuy: "" });
 
     Keyboard.dismiss();
   };
 
-  deleteItem = index => {
+  deleteItem = (index) => {
     let list = this.props.list;
     list.items.splice(index, 1);
 
     this.props.updateList(list);
-};
+  };
 
   renderItem = (item, index) => {
     return (
@@ -54,7 +53,7 @@ export default class TobuyModal extends React.Component {
         renderRightActions={(_, dragX) => this.rightActions(dragX, index)}
       >
         <View style={styles.itemContainer}>
-          <TouchableOpacity onPress={() => this.toggleTobuyCompleted(index)}>
+          <TouchableOpacity onPress={() => this.toggleToBuyCompleted(index)}>
             <Ionicons
               name={item.completed ? "ios-square" : "ios-square-outline"}
               size={24}
@@ -139,11 +138,11 @@ export default class TobuyModal extends React.Component {
             </View>
           </View>
 
-          <View style={[styles.section, { flex: 3 , marginVertical: 16}]}>
+          <View style={[styles.section, { flex: 3, marginVertical: 16 }]}>
             <FlatList
               data={list.items}
               renderItem={({ item, index }) => this.renderItem(item, index)}
-              keyExtractor={item => item.title}
+              keyExtractor={(item) => item.title}
               showsVerticalScrollIndicator={false}
             />
           </View>
@@ -151,8 +150,8 @@ export default class TobuyModal extends React.Component {
           <View style={[styles.section, styles.footer]}>
             <TextInput
               style={[styles.input, { borderColor: list.color }]}
-              onChangeText={(text) => this.setState({ newTobuy: text })}
-              value={this.state.newTobuy}
+              onChangeText={(text) => this.setState({ newToBuy: text })}
+              value={this.state.newToBuy}
             />
             <TouchableOpacity
               style={[styles.addItem, { backgroundColor: list.color }]}
@@ -181,7 +180,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     marginLeft: 64,
     borderBottomWidth: 3,
-    paddingTop: 16
+    paddingTop: 16,
   },
   title: {
     fontSize: 30,
@@ -198,7 +197,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 16
+    paddingVertical: 16,
   },
   input: {
     flex: 1,
@@ -218,7 +217,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     flexDirection: "row",
     alignItems: "center",
-    paddingLeft: 32
+    paddingLeft: 32,
   },
   item: {
     color: Colors.black,

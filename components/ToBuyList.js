@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Modal } from "react-native";
 import Colors from "../Colors";
-import TobuyModal from "./TobuyModal";
+import ToBuyModal from "./ToBuyModal";
 
 export default class ToBuyList extends React.Component {
   state = {
@@ -24,7 +24,7 @@ export default class ToBuyList extends React.Component {
           visible={this.state.showListVariable}
           onRequestClose={() => this.toggleListModel()}
         >
-          <TobuyModal
+          <ToBuyModal
             list={list}
             closeModal={() => this.toggleListModel()}
             updateList={this.props.updateList}

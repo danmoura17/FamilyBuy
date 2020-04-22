@@ -33,12 +33,6 @@ export default class AddListModal extends React.Component {
 
     this.props.addList(list);
 
-    tempData.push({
-      name,
-      color,
-      items: [],
-    });
-
     this.setState({ name: "" });
     this.props.closeModal();
   };
