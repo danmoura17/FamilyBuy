@@ -96,7 +96,7 @@ export default class TobuyModal extends React.Component {
             <FlatList
               data={list.items}
               renderItem={({ item, index }) => this.renderItem(item, index)}
-              keyExtractor={(item) => item.title}
+              keyExtractor={(_, index) => index.toString()}
               contentContainerStyle={{
                 paddingHorizontal: 32,
                 paddingVertical: 64,
