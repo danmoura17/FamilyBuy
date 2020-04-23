@@ -69,7 +69,7 @@ class Fire {
     return firebase
       .firestore()
       .collection("users")
-      .doc(this.userId)
+      .doc("jIKd2A0qkccdQ26zet25yTAhGZm2")
       .collection("lists");
   }
 

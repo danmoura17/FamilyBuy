@@ -14,8 +14,8 @@ export default class ToBuyList extends React.Component {
 
   render() {
     const list = this.props.list;
-    const completedCount = list.items.filter((item) => item.completed).length;
-    const remainingCount = list.items.length - completedCount;
+    const completedCount = list.todos.filter((todo) => todo.completed).length;
+    const remainingCount = list.todos.length - completedCount;
 
     return (
       <View>

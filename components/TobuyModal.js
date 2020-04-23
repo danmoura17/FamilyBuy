@@ -10,6 +10,7 @@ import {
   TextInput,
   Keyboard,
   Animated,
+  Alert,
 } from "react-native";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import Colors from "../Colors";
@@ -22,7 +23,7 @@ export default class ToBuyModal extends React.Component {
 
   toggleToBuyCompleted = (index) => {
     let list = this.props.list;
-    list.items[index].completed = !list.items[index].completed;
+    list.todos[index].completed = !list.todos[index].completed;
 
     this.props.updateList(list);
   };
@@ -30,8 +31,8 @@ export default class ToBuyModal extends React.Component {
   addItem = () => {
     let list = this.props.list;
 
-    if (!list.items.some((item) => item.title === this.state.newToBuy)) {
-      list.items.push({ title: this.state.newToBuy, completed: false });
+    if (!list.todos.some((item) => item.title === this.state.newToBuy)) {
+      list.todos.push({ title: this.state.newToBuy, completed: false });
       this.props.updateList(list);
     }
 
@@ -42,9 +43,26 @@ export default class ToBuyModal extends React.Component {
 
   deleteItem = (index) => {
     let list = this.props.list;
-    list.items.splice(index, 1);
+    Alert.alert(
+      "Atenção",
+      `Deseja deletar ${list.todos[index].title} ?`,
+      [
+        {
+          text: "Cancel",
+          onPress: () => {},
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            list.todos.splice(index, 1);
 
-    this.props.updateList(list);
+            this.todos.updateList(list);
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   renderItem = (item, index) => {
@@ -73,6 +91,17 @@ export default class ToBuyModal extends React.Component {
           >
             {item.title}{" "}
           </Text>
+          <TouchableOpacity
+            style={styles.deletar}
+            onPress={() => this.deleteItem(index)}
+          >
+            <Ionicons
+              name={"ios-trash"}
+              size={24}
+              color={Colors.red}
+              style={styles.deletar}
+            />
+          </TouchableOpacity>
         </View>
       </Swipeable>
     );
@@ -101,7 +130,7 @@ export default class ToBuyModal extends React.Component {
               transform: [{ scale }],
             }}
           >
-            Delete
+            Deletar
           </Animated.Text>
         </Animated.View>
       </TouchableOpacity>
@@ -111,8 +140,8 @@ export default class ToBuyModal extends React.Component {
   render() {
     const list = this.props.list;
 
-    const taskCount = list.items.length;
-    const completedCount = list.items.filter((item) => item.completed).length;
+    const taskCount = list.todos.length;
+    const completedCount = list.todos.filter((item) => item.completed).length;
     return (
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <SafeAreaView style={styles.container}>
@@ -140,7 +169,7 @@ export default class ToBuyModal extends React.Component {
 
           <View style={[styles.section, { flex: 3, marginVertical: 16 }]}>
             <FlatList
-              data={list.items}
+              data={list.todos}
               renderItem={({ item, index }) => this.renderItem(item, index)}
               keyExtractor={(item) => item.title}
               showsVerticalScrollIndicator={false}
@@ -230,5 +259,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: 80,
+  },
+  deletar: {
+    flex: 1,
+    paddingRight: 15,
+    alignSelf: "flex-end",
   },
 });

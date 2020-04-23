@@ -1,10 +1,10 @@
 {
   "devToolsPort": 19002,
-  "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 8980,
-  "expoServerNgrokUrl": "https://m7-btt.anonymous.familybuy.exp.direct",
-  "packagerNgrokUrl": "https://packager.m7-btt.anonymous.familybuy.exp.direct",
-  "ngrokPid": 3064,
+  "expoServerPort": null,
+  "packagerPort": null,
+  "packagerPid": null,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null,
   "webpackServerPort": null
 }

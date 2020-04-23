@@ -19,7 +19,7 @@ export default class App extends React.Component {
     addToBuyVisible: false,
     lists: [],
     user: {},
-    loading: false,
+    loading: true,
   };
 
   componentDidMount() {
@@ -54,16 +54,12 @@ export default class App extends React.Component {
     firebase.addList({
       name: list.name,
       color: list.color,
-      items: [],
+      todos: [],
     });
   };
 
   updateList = (list) => {
-    this.setState({
-      lists: this.state.lists.map((item) => {
-        return item.id === list.id ? list : item;
-      }),
-    });
+    firebase.updateList(list);
   };
 
   render() {
@@ -90,7 +86,7 @@ export default class App extends React.Component {
         <View style={{ flexDirection: "row" }}>
           <View style={styles.divider} />
           <Text style={styles.title}>
-            Moura{" "}
+            Moura's{" "}
             <Text style={{ fontWeight: "300", color: colors.blue }}>App</Text>
           </Text>
           <View style={styles.divider} />
