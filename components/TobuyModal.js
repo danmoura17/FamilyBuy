@@ -48,7 +48,7 @@ export default class ToBuyModal extends React.Component {
       `Deseja deletar ${list.todos[index].title} ?`,
       [
         {
-          text: "Cancel",
+          text: "Cancelar",
           onPress: () => {},
           style: "cancel",
         },
@@ -57,13 +57,15 @@ export default class ToBuyModal extends React.Component {
           onPress: () => {
             list.todos.splice(index, 1);
 
-            this.todos.updateList(list);
+            this.props.updateList(list);
           },
         },
       ],
       { cancelable: false }
     );
   };
+
+
 
   renderItem = (item, index) => {
     return (
@@ -81,6 +83,7 @@ export default class ToBuyModal extends React.Component {
           </TouchableOpacity>
 
           <Text
+            behavior={Platform.OS == "ios" ? "" : "height"}
             style={[
               styles.item,
               {
@@ -89,9 +92,9 @@ export default class ToBuyModal extends React.Component {
               },
             ]}
           >
-            {item.title}{" "}
+            {item.title}{""}
           </Text>
-          <TouchableOpacity
+          <TouchableOpacity 
             style={styles.deletar}
             onPress={() => this.deleteItem(index)}
           >
@@ -143,10 +146,14 @@ export default class ToBuyModal extends React.Component {
     const taskCount = list.todos.length;
     const completedCount = list.todos.filter((item) => item.completed).length;
     return (
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+      <KeyboardAvoidingView style={{ flex: 1 }} 
+      behavior={Platform.OS == "ios" ? "padding" : "height"}
+       resetScrollToCoords={{ x: 0, y: 0 }}
+      contentContainerStyle={styles.container}
+      scrollEnabled={false}>
         <SafeAreaView style={styles.container}>
           <TouchableOpacity
-            style={{ position: "absolute", top: 64, right: 32, zIndex: 10 }}
+            style={{ position: "absolute", top: 32, right: 32, zIndex: 10 }}
             onPress={this.props.closeModal}
           >
             <AntDesign name="close" size={24} color={Colors.black} />

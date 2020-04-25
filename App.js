@@ -100,18 +100,20 @@ export default class App extends React.Component {
             <AntDesign name="plus" size={16} color={colors.blue} />
           </TouchableOpacity>
 
-          <Text style={styles.add}>Adicionar lista</Text>
+          <Text style={styles.add}>Criar lista</Text>
         </View>
 
-        <View style={{ height: 275, paddingLeft: 32 }}>
-          <FlatList
-            data={this.state.lists}
-            keyExtractor={(item) => item.id.toString()}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            renderItem={({ item }) => this.renderList(item)}
-            keyboardShouldPersistTaps="always"
-          />
+        <View>
+          <View style={{ height: 275, paddingLeft: 0 }}>
+            <FlatList
+              data={this.state.lists}
+              keyExtractor={(item) => item.id.toString()}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item }) => this.renderList(item)}
+              keyboardShouldPersistTaps="always"
+            />
+          </View>
         </View>
       </View>
     );
@@ -141,7 +143,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: colors.lightBlue,
     borderRadius: 4,
-    padding: 30,
+    padding: 16,
     alignItems: "center",
     justifyContent: "center",
   },

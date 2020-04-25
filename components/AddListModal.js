@@ -51,9 +51,13 @@ export default class AddListModal extends React.Component {
 
   render() {
     return (
-      <KeyboardAvoidingView style={styles.container} behavior="padding">
+      <KeyboardAvoidingView style={styles.container} 
+      behavior={Platform.OS == "ios" ? "padding" : "height"}
+       resetScrollToCoords={{ x: 0, y: 0 }}
+      contentContainerStyle={styles.container}
+      scrollEnabled={false}>
         <TouchableOpacity
-          style={{ position: "absolute", top: 64, right: 32 }}
+          style={{ position: "absolute", top: 32, right: 32 }}
           onPress={this.props.closeModal}
         >
           <AntDesign name="close" size={24} color={Colors.black} />
@@ -121,8 +125,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   colorSelect: {
-    width: 100,
-    height: 50,
+    width: 30,
+    height: 30,
     borderRadius: 4,
   },
 });
