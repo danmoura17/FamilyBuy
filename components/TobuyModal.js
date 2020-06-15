@@ -11,6 +11,7 @@ import {
   Keyboard,
   Animated,
   Alert,
+  Button,
 } from "react-native";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import Colors from "../Colors";
@@ -35,10 +36,36 @@ export default class ToBuyModal extends React.Component {
       list.todos.push({ title: this.state.newToBuy, completed: false });
       this.props.updateList(list);
     }
-
     this.setState({ newToBuy: "" });
 
     Keyboard.dismiss();
+  };
+
+  deleteAllCheckedItems = () => {
+    let list = this.props.list;
+    Alert.alert(
+      "Atenção",
+      `Deseja deletar todos os itens feitos?`,
+      [
+        {
+          text: "Cancelar",
+          onPress: () => {},
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            list.todos.forEach((element,index) => {
+              if(element.completed == true){
+                list.todos.splice(index, 1);
+              }
+            });
+            this.props.updateList(list);
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   deleteItem = (index) => {
@@ -167,11 +194,20 @@ export default class ToBuyModal extends React.Component {
             ]}
           >
             <View>
-              <Text style={styles.title}>{list.name}</Text>
+              <View style={[styles.cabecalho]}>
+                <Text style={styles.title}>{list.name}</Text>
+                <TouchableOpacity
+                  style={[styles.addItem, { backgroundColor: list.color }]}
+                  onPress={() => this.deleteAllCheckedItems()}>
+                  <AntDesign name="bars" size={16} color={Colors.white} />
+                </TouchableOpacity>
+              </View>
               <Text style={styles.taskCount}>
                 {completedCount} de {taskCount} items
               </Text>
             </View>
+
+
           </View>
 
           <View style={[styles.section, { flex: 3, marginVertical: 16 }]}>
@@ -233,6 +269,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     flexDirection: "row",
     alignItems: "center",
+    paddingVertical: 16,
+  },
+  buttonCabecalho: {
+    justifyContent: "flex-end",
+    paddingVertical: 16,
+  },
+  cabecalho: {
+    flexDirection: "row",
     paddingVertical: 16,
   },
   input: {
