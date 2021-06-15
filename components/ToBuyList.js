@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Modal } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Modal, Alert } from "react-native";
 import Colors from "../Colors";
 import ToBuyModal from "./ToBuyModal";
 
@@ -11,6 +11,32 @@ export default class ToBuyList extends React.Component {
   toggleListModel() {
     this.setState({ showListVariable: !this.state.showListVariable });
   }
+
+  deleteList = () => {
+    const list = this.props.list
+
+    
+
+    Alert.alert(
+      "Atenção",
+      `Deseja deletar a lista ${list.name} ?`,
+      [
+        {
+          text: "Cancelar",
+          onPress: () => {},
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            this.props.deleteList(list);
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
 
   render() {
     const list = this.props.list;
@@ -33,6 +59,7 @@ export default class ToBuyList extends React.Component {
         <TouchableOpacity
           style={[styles.listContainer, { backgroundColor: list.color }]}
           onPress={() => this.toggleListModel()}
+          onLongPress={() => this.deleteList()}
         >
           <Text style={styles.listTitle} numberOfLines={1}>
             {list.name}

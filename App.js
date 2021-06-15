@@ -47,7 +47,7 @@ export default class App extends React.Component {
   }
 
   renderList = (list) => {
-    return <ToBuyList list={list} updateList={this.updateList} />;
+    return <ToBuyList list={list} updateList={this.updateList} deleteList={this.deleteList}/>;
   };
 
   addList = (list) => {
@@ -61,6 +61,10 @@ export default class App extends React.Component {
   updateList = (list) => {
     firebase.updateList(list);
   };
+
+  deleteList = (list) => {
+    firebase.deleteList(list)
+  }
 
   render() {
     if (this.state.loading) {

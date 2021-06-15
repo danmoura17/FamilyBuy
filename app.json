@@ -29,6 +29,7 @@
     "android": {
       "package": "com.daniel.familybuyapp",
       "versionCode": 1
-    }
+    },
+    "description": ""
   }
 }

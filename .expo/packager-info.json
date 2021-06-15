@@ -1,10 +1,10 @@
 {
   "devToolsPort": 19002,
-  "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 14252,
-  "expoServerNgrokUrl": "https://ah-6gz.danmoura17.familybuy.exp.direct",
-  "packagerNgrokUrl": "https://packager.ah-6gz.danmoura17.familybuy.exp.direct",
-  "ngrokPid": 6756,
+  "expoServerPort": null,
+  "packagerPort": null,
+  "packagerPid": null,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null,
   "webpackServerPort": null
 }
