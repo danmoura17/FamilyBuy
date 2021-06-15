@@ -214,7 +214,11 @@ export default class ToBuyModal extends React.Component {
             <FlatList
               data={list.todos}
               renderItem={({ item, index }) => this.renderItem(item, index)}
-              keyExtractor={(item) => item.title}
+              keyExtractor={(_, index) => index.toString()}
+              contentContainerStyle={{
+                paddingHorizontal: 32,
+                paddingVertical: 64,
+              }}
               showsVerticalScrollIndicator={false}
             />
           </View>

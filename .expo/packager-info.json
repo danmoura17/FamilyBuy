@@ -1,10 +1,10 @@
 {
   "devToolsPort": 19002,
-  "expoServerPort": null,
-  "packagerPort": null,
-  "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "expoServerPort": 19000,
+  "packagerPort": 19001,
+  "packagerPid": 9420,
+  "expoServerNgrokUrl": "https://mn-fkg.anonymous.familybuy.exp.direct",
+  "packagerNgrokUrl": "https://packager.mn-fkg.anonymous.familybuy.exp.direct",
+  "ngrokPid": 2676,
   "webpackServerPort": null
 }

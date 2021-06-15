@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   FlatList,
   Modal,
-  ActivityIndicator,
+  ActivityIndicator
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import colors from "./Colors";
@@ -25,10 +25,10 @@ export default class App extends React.Component {
   componentDidMount() {
     firebase = new Fire((error, user) => {
       if (error) {
-        return alert("Uh oh, something went wrong");
+        return alert("Parece que algo deu errado");
       }
 
-      firebase.getLists((lists) => {
+      firebase.getLists(lists => {
         this.setState({ lists, user }, () => {
           this.setState({ loading: false });
         });
@@ -38,7 +38,7 @@ export default class App extends React.Component {
     });
   }
 
-  componentWillUnmount() {
+  componentWillMount(){
     firebase.detach();
   }
 
@@ -87,6 +87,9 @@ export default class App extends React.Component {
             addList={this.addList}
           />
         </Modal>
+        <View>
+          <Text>User: {this.state.user.uid}</Text>
+        </View>
         <View style={{ flexDirection: "row" }}>
           <View style={styles.divider} />
           <Text style={styles.title}>
