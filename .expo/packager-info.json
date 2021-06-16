@@ -2,9 +2,9 @@
   "devToolsPort": 19002,
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 13604,
-  "expoServerNgrokUrl": "https://mn-fkg.anonymous.familybuy.exp.direct",
-  "packagerNgrokUrl": "https://packager.mn-fkg.anonymous.familybuy.exp.direct",
-  "ngrokPid": 2676,
+  "packagerPid": 3120,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null,
   "webpackServerPort": null
 }

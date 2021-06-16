@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Modal, Alert } from "react-native";
 import Colors from "../Colors";
-import ToBuyModal from "./ToBuyModal";
+import ToBuyModal from "./TobuyModal";
 
 export default class ToBuyList extends React.Component {
   state = {

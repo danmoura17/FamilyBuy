@@ -55,8 +55,8 @@ export default class ToBuyModal extends React.Component {
         {
           text: "OK",
           onPress: () => {
-            list.todos.forEach((element,index) => {
-              if(element.completed == true){
+            list.todos.forEach((element, index) => {
+              if (element.completed == true) {
                 list.todos.splice(index, 1);
               }
             });
@@ -92,8 +92,6 @@ export default class ToBuyModal extends React.Component {
     );
   };
 
-
-
   renderItem = (item, index) => {
     return (
       <Swipeable
@@ -105,7 +103,7 @@ export default class ToBuyModal extends React.Component {
               name={item.completed ? "ios-square" : "ios-square-outline"}
               size={24}
               color={Colors.gray}
-              style={{ width: 32 }}
+              style={{ width: 32, justifyContent: "center" }}
             />
           </TouchableOpacity>
 
@@ -116,13 +114,16 @@ export default class ToBuyModal extends React.Component {
               {
                 textDecorationLine: item.completed ? "line-through" : "none",
                 color: item.completed ? Colors.gray : Colors.black,
+                flexWrap: "wrap",
+                flexShrink: 1,
+                flex: 1,
               },
             ]}
           >
-            {item.title}{""}
+            {item.title}
+            {""}
           </Text>
-          <TouchableOpacity 
-            style={styles.deletar}
+          <TouchableOpacity
             onPress={() => this.deleteItem(index)}
           >
             <Ionicons
@@ -173,17 +174,19 @@ export default class ToBuyModal extends React.Component {
     const taskCount = list.todos.length;
     const completedCount = list.todos.filter((item) => item.completed).length;
     return (
-      <KeyboardAvoidingView style={{ flex: 1 }} 
-      behavior={Platform.OS == "ios" ? "padding" : "height"}
-       resetScrollToCoords={{ x: 0, y: 0 }}
-      contentContainerStyle={styles.container}
-      scrollEnabled={false}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS == "ios" ? "padding" : "height"}
+        resetScrollToCoords={{ x: 0, y: 0 }}
+        contentContainerStyle={styles.container}
+        scrollEnabled={false}
+      >
         <SafeAreaView style={styles.container}>
           <TouchableOpacity
             style={{ position: "absolute", top: 32, right: 32, zIndex: 10 }}
             onPress={this.props.closeModal}
           >
-            <AntDesign name="close" size={24} color={Colors.black} />
+            <AntDesign name="close" size={35} color={Colors.black} />
           </TouchableOpacity>
 
           <View
@@ -197,17 +200,22 @@ export default class ToBuyModal extends React.Component {
               <View style={[styles.cabecalho]}>
                 <Text style={styles.title}>{list.name}</Text>
                 <TouchableOpacity
-                  style={[styles.addItem, { backgroundColor: list.color }]}
-                  onPress={() => this.deleteAllCheckedItems()}>
-                  <AntDesign name="bars" size={16} color={Colors.white} />
+                  style={[
+                    styles.addItem,
+                    {
+                      backgroundColor: list.color,
+                      marginRight:15,
+                    },
+                  ]}
+                  onPress={() => this.deleteAllCheckedItems()}
+                >
+                  <AntDesign name="bars" size={20} color={Colors.white} />
                 </TouchableOpacity>
               </View>
               <Text style={styles.taskCount}>
                 {completedCount} de {taskCount} items
               </Text>
             </View>
-
-
           </View>
 
           <View style={[styles.section, { flex: 3, marginVertical: 16 }]}>
@@ -215,10 +223,6 @@ export default class ToBuyModal extends React.Component {
               data={list.todos}
               renderItem={({ item, index }) => this.renderItem(item, index)}
               keyExtractor={(_, index) => index.toString()}
-              contentContainerStyle={{
-                paddingHorizontal: 32,
-                paddingVertical: 64,
-              }}
               showsVerticalScrollIndicator={false}
             />
           </View>
@@ -249,7 +253,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   section: {
-    flex: 1,
+    flex: 0,
     alignSelf: "stretch",
   },
   header: {
@@ -262,6 +266,9 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "800",
     color: Colors.black,
+    flex:1,
+    flexWrap: "wrap",
+    flexShrink: 1,
   },
   taskCount: {
     marginTop: 4,
@@ -316,8 +323,8 @@ const styles = StyleSheet.create({
     width: 80,
   },
   deletar: {
-    flex: 1,
-    paddingRight: 15,
-    alignSelf: "flex-end",
+    flex: 0,
+    paddingRight: 5,
+    justifyContent: "center",
   },
 });
