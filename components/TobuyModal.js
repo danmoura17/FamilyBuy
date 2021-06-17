@@ -12,15 +12,56 @@ import {
   Animated,
   Alert,
   Button,
+  TouchableHighlight,
+  SectionList
 } from "react-native";
-import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Colors from "../Colors";
 import { Swipeable } from "react-native-gesture-handler";
+import SectionedMultiSelect from 'react-native-sectioned-multi-select';
+
 
 export default class ToBuyModal extends React.Component {
+
+  constructor (props){
+    super(props)
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+  }
   state = {
     newToBuy: "",
+    keyboardState: 'closed',
+    selectedCategory: null,
+    selectedItems: [],
   };
+
+
+  componentWillUnmount () {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
+  }
+
+  _keyboardDidShow = () => {
+    this.setState({
+        keyboardState: 'opened'
+    });
+  }
+
+  _keyboardDidHide = () => {
+
+  }
+
+  onSelectedItemsChange = (selectedItems) => {
+    this.setState({ selectedItems });
+  };
+
+  handleSelection = (category) => {
+
+      this.setState({selectedCategory: category})
+
+    alert(category)
+ }
+
 
   toggleToBuyCompleted = (index) => {
     let list = this.props.list;
@@ -32,8 +73,24 @@ export default class ToBuyModal extends React.Component {
   addItem = () => {
     let list = this.props.list;
 
+
     if (!list.todos.some((item) => item.title === this.state.newToBuy)) {
-      list.todos.push({ title: this.state.newToBuy, completed: false });
+
+      
+
+      
+
+      let obj = {
+        title: this.state.newToBuy,
+        completed: false,
+      }
+      if (this.state.selectedCategory !== null){
+
+        obj['category'] = this.state.selectedCategory
+      }
+
+      // alert(this.state.selectedId)
+      list.todos.push(obj);
       this.props.updateList(list);
     }
     this.setState({ newToBuy: "" });
@@ -173,6 +230,88 @@ export default class ToBuyModal extends React.Component {
 
     const taskCount = list.todos.length;
     const completedCount = list.todos.filter((item) => item.completed).length;
+    const items = [
+      // this is the parent or 'item'
+      {
+        // these are the children or 'sub items'
+        children: [
+          {
+            name: 'Açougue',
+            id: 10,
+          },
+          {
+            name: 'Hortifruti',
+            id: 17,
+          },
+          {
+            name: 'Padaria',
+            id: 13,
+          },
+          {
+            name: 'Limpeza',
+            id: 14,
+          },
+          {
+            name: 'Grãos',
+            id: 15,
+          },
+          {
+            name: 'Higiene',
+            id: 16,
+          },
+        ],
+      } 
+    ]
+    let obj = {'primary' : list.color}
+    const categoryList = 
+    <SectionedMultiSelect
+          items={items}
+          IconRenderer={MaterialIcons}
+          uniqueKey="id"
+          subKey="children"
+          selectText="Choose some things..."
+          showDropDowns={true}
+          readOnlyHeadings={true}
+          onSelectedItemsChange={this.onSelectedItemsChange}
+          selectedItems={this.state.selectedItems}
+          confirmText="Confirmar"
+          searchPlaceholderText="Procurar categorias..."
+          selectText="Colocar em sessão..."
+          single
+          showDropDowns={false}
+          colors={obj}
+        />
+    // <FlatList
+    //   horizontal
+    //   ItemSeparatorComponent={Platform.OS !== 'android' &&
+    //     (({ highlighted }) => (
+    //       <View
+    //         style={[
+    //           highlighted && { marginLeft: 0 }
+    //         ]} />
+    //     ))}
+    //   data={[
+    //     { title: 'Bebidas', key: '1' },
+    //     { title: 'Laticíneos', key: '2' },
+    //     { title: 'Hortifruti', key: '3' },
+    //     { title: 'Açougue', key: '4' },
+    //     { title: 'Grãos', key: '5' },
+    //     { title: 'Chocolates', key: '6' },
+    //     { title: 'Limpeza', key: '7' }
+    //   ]}
+    //   extraData={this.state.selectedId}
+    //   renderItem={({ item, index, separators }) => (
+    //     <TouchableHighlight
+    //       key={item.key}
+    //       onPress={() => this.handleSelection(item.title)}
+    //       onShowUnderlay={separators.highlight}
+    //       onHideUnderlay={separators.unhighlight}>
+    //       <View style={{ backgroundColor: 'white' }}>
+    //         <Text>{item.title}</Text>
+    //       </View>
+    //     </TouchableHighlight>
+    //   )} />;
+
     return (
       <KeyboardAvoidingView
         style={{ flex: 1 }}
@@ -225,20 +364,27 @@ export default class ToBuyModal extends React.Component {
               keyExtractor={(_, index) => index.toString()}
               showsVerticalScrollIndicator={false}
             />
+
+          </View>
+          <View style={[styles.section ]}>
+          <View style={{paddingHorizontal: 32, paddingVertical:5}}>
+          { this.state.keyboardState == 'opened' && categoryList}
           </View>
 
-          <View style={[styles.section, styles.footer]}>
-            <TextInput
-              style={[styles.input, { borderColor: list.color }]}
-              onChangeText={(text) => this.setState({ newToBuy: text })}
-              value={this.state.newToBuy}
-            />
-            <TouchableOpacity
-              style={[styles.addItem, { backgroundColor: list.color }]}
-              onPress={() => this.addItem()}
-            >
-              <AntDesign name="plus" size={16} color={Colors.white} />
-            </TouchableOpacity>
+            <View style={[ styles.footer]}>
+              <TextInput
+                style={[styles.input, { borderColor: list.color }]}
+                onChangeText={(text) => this.setState({ newToBuy: text })}
+                onSubmitEditing={Keyboard.dismiss}
+                value={this.state.newToBuy}
+              />
+              <TouchableOpacity
+                style={[styles.addItem, { backgroundColor: list.color }]}
+                onPress={() => this.addItem()}
+              >
+                <AntDesign name="plus" size={16} color={Colors.white} />
+              </TouchableOpacity>
+            </View>
           </View>
         </SafeAreaView>
       </KeyboardAvoidingView>
@@ -280,7 +426,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 16,
+    paddingVertical: 8,
   },
   buttonCabecalho: {
     justifyContent: "flex-end",
